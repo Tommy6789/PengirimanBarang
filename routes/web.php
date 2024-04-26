@@ -32,4 +32,5 @@ Route::group(['middleware' => 'auth'], function ()
     Route::resource('pengiriman', PengirimanController::class);
     Route::resource('pegawai', PegawaiController::class);
     Route::resource('pelanggan', PelangganController::class);
+    Route::get('pengiriman/{id}/nota', [PengirimanController::class,'nota'])->name('pengiriman.nota');
 });

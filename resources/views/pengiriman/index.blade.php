@@ -144,6 +144,7 @@
                                 <!-- Delete Button -->
                                 <button type="submit" class="btn btn-danger">Delete</button>
                             </form>
+                            <a href="{{ route('pengiriman.nota', $item->id) }}" type="button" class="btn brn-info">Cetak Nota</a>
                         </td>
                     </tr>
 
@@ -183,9 +184,8 @@
                     <label for="">Tanggal Dikirim</label>
                     <input class="form-control" type="date" name="tanggal_dikirim" value="{{ $item->tanggal_dikirim }}">
                     <label for="">Photo Penyerahan</label>
+                    <input class="form-control" type="file" name="photo_penyerahan">
                     <!-- Display current image -->
-                    
-                    <input class="form-control" type="file" name="Photo_penyerahan">
                     <br>
                     <img src="{{ asset('storage/' . $item->photo_penyerahan) }}" alt="Current Image" height="70">
                     <br>

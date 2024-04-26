@@ -78,30 +78,37 @@ class PengirimanController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-    {
-        // Find the DataPengiriman record by its ID
-        $data = DataPengiriman::findOrFail($id);
+{
+    // Find the DataPengiriman record by its ID
+    $data = DataPengiriman::findOrFail($id);
 
-        // Validate the incoming request data
-        $validate = $request->validate([
-            'id_pegawai' => 'required',
-            'id_pelanggan' => 'required',
-            'tanggal_dikirim' => 'required',
-            'Photo_penyerahan' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'harga' => 'required',
-            'status' => 'required'
-        ]);
+    // Validate the incoming request data
+    $validate = $request->validate([
+        'id_pegawai' => 'required',
+        'id_pelanggan' => 'required',
+        'tanggal_dikirim' => 'required',
+        'photo_penyerahan' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Updated field name
+        'harga' => 'required',
+        'status' => 'required'
+    ]);
 
-        $data = DataPengiriman::findOrFail($id);
-        if ($data->photo) {
-            Storage::disk('public')->delete($data->photo);
+    // Check if a file was uploaded
+    if ($request->hasFile('photo_penyerahan')) {
+        // Delete the old photo if it exists
+        if ($data->photo_penyerahan) {
+            Storage::disk('public')->delete($data->photo_penyerahan);
         }
-        $imageName = time() . '.' . $request->photo->extension();
-        $request->photo->storeAs('public', $imageName);
-        $validate['photo'] = $imageName;
-        $data->update($validate);
-        return redirect('pengiriman')->with('success', 'Data Pengiriman berhasil diperbarui');
+        
+        // Store the new photo
+        $imageName = time().'.'.$request->photo_penyerahan->extension();  
+        $request->photo_penyerahan->storeAs('public', $imageName);
+        $validate['photo_penyerahan'] = $imageName;
     }
+
+    $data->update($validate);
+    return redirect('/pengiriman')->with('success', 'Berhasil mengupdate pengiriman');
+}
+
 
     /**
      * Remove the specified resource from storage.
@@ -117,5 +124,10 @@ class PengirimanController extends Controller
         $data->delete();
         // Redirect back with success message
         return redirect('pengiriman')->with('success', 'Data Pengiriman berhasil dihapus');
+    }
+    public function nota(string $id)
+    {
+        $data = DataPengiriman::where('id','=',$id)->get();
+        return view('pdf.nota',['data'=>$data]);
     }
 }
